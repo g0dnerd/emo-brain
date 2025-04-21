@@ -51,6 +51,9 @@ watchEffect(() => {
 
 <template>
   <div class="container">
-    <div class="main-wrapper"></div>
+    <div v-if="loading">Loading...</div>
+    <div v-else class="main-wrapper">
+      <p>Playback SDK ready</p>
+    </div>
   </div>
 </template>
