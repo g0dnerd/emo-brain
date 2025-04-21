@@ -2,6 +2,7 @@
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import Login from './Login.vue'
+import Playback from './Playback.vue'
 
 const loading = ref(false)
 const token = ref(null)
@@ -17,7 +18,6 @@ async function fetchData() {
 
   try {
     const res = await fetch('http://127.0.0.1:5000/auth/token')
-    console.log(`Response: ${JSON.stringify(res)}`)
     const json = await res.json()
     token.value = json.access_token
   } catch (err) {
@@ -31,7 +31,7 @@ async function fetchData() {
 
 <template>
   <div class="wrapper">
-    <p v-if="token">Das ja jetzt cringe Bruder</p>
+    <Playback v-if="token" :token="token" />
     <Login v-else />
   </div>
 </template>
