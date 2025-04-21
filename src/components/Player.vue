@@ -1,19 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, watchEffect } from 'vue'
 import Login from './Login.vue'
 import Playback from './Playback.vue'
+import Playlists from './Playlists.vue'
 
 const loading = ref(false)
 const token = ref(null)
-const error = ref(null)
 
-const route = useRoute()
-
-watch(() => route.params.id, fetchData, { immediate: true })
-
-async function fetchData() {
-  error.value = token.value = null
+watchEffect(async () => {
   loading.value = true
 
   try {
@@ -26,13 +20,28 @@ async function fetchData() {
   } finally {
     loading.value = false
   }
-}
+})
 </script>
 
 <template>
   <p v-if="loading">Loading...</p>
   <div v-else class="wrapper">
-    <Playback v-if="token" :token="token" />
-    <Login v-else />
+    <div class="wrapper-inner">
+      <Playback v-if="token" :token="token" />
+      <Login v-else />
+    </div>
+    <div class="wrapper-inner">
+      <Playlists v-if="token" :token="token" />
+      <Login v-else />
+    </div>
   </div>
 </template>
+
+<style lang="sass" scoped>
+.wrapper
+  display: flex;
+  flex-flow: row;
+
+.wrapper-inner
+  padding: 40px 60px;
+</style>

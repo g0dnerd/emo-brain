@@ -2,14 +2,7 @@
 const { token } = defineProps(['token'])
 
 import { ref, watchEffect } from 'vue'
-
-interface Track {
-  name: string
-  album: {
-    images: [{ url: string }]
-  }
-  artists: [{ name: string }]
-}
+import { type Track } from '@/types'
 
 const loading = ref(false)
 
@@ -18,7 +11,7 @@ const isPaused = ref(false)
 const isActive = ref(false)
 const currentTrack = ref<Track>()
 
-watchEffect(() => {
+watchEffect(async () => {
   loading.value = true
   try {
     const script = document.createElement('script')
@@ -68,7 +61,8 @@ watchEffect(() => {
       // @ts-ignore
       p.connect()
     }
-  } catch {
+  } catch (error) {
+    console.error(error)
   } finally {
     loading.value = false
   }
@@ -91,7 +85,6 @@ function nextTrack() {
   <div class="container">
     <div v-if="loading">Loading...</div>
     <div v-else class="main-wrapper">
-      <p>Playback SDK ready</p>
       <div v-if="currentTrack" class="now-playing">
         <img v-bind:src="currentTrack.album.images[0].url" class="now-playing__cover" alt="" />
         <div class="now-playing__side">
@@ -111,3 +104,8 @@ function nextTrack() {
     </div>
   </div>
 </template>
+
+<style lang="sass" scoped>
+.now-playing__cover
+  max-width: 400px;
+</style>

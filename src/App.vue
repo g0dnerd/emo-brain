@@ -33,4 +33,9 @@ header {
     flex-wrap: wrap;
   }
 }
+
+main {
+  grid-column-start: 2;
+  grid-column-end: 4;
+}
 </style>

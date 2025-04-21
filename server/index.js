@@ -6,6 +6,8 @@ const port = 5000
 
 global.access_token = ''
 
+const spotifyApiUri = 'https://api.spotify.com/v1'
+
 var spotify_client_id = '5c7dfb57f6f14c89b6028d78d721eeb5'
 var spotify_client_secret = '97f5b635e14d4f098659c1729bd05382'
 var redirect_uri = 'http://127.0.0.1:5000/auth/callback'
@@ -57,6 +59,21 @@ app.get('/auth/callback', (req, res) => {
       res.redirect('http://127.0.0.1:5173/')
     }
   })
+})
+
+app.get('/api/playlists', (req, res) => {
+  request.get(
+    `${spotifyApiUri}/me/playlists`,
+    {
+      method: 'GET',
+      headers: {
+        authorization: req.headers.authorization,
+      },
+    },
+    function (_error, _response, body) {
+      res.json(JSON.parse(body))
+    },
+  )
 })
 
 app.get('/auth/token', (_, res) => {
