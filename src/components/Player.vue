@@ -30,7 +30,8 @@ async function fetchData() {
 </script>
 
 <template>
-  <div class="wrapper">
+  <p v-if="loading">Loading...</p>
+  <div v-else class="wrapper">
     <Playback v-if="token" :token="token" />
     <Login v-else />
   </div>
