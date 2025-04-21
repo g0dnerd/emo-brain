@@ -61,6 +61,12 @@ app.get('/auth/callback', (req, res) => {
   })
 })
 
+app.get('/auth/token', (_, res) => {
+  res.json({
+    access_token,
+  })
+})
+
 app.get('/api/playlists', (req, res) => {
   request.get(
     `${spotifyApiUri}/me/playlists`,
@@ -76,10 +82,19 @@ app.get('/api/playlists', (req, res) => {
   )
 })
 
-app.get('/auth/token', (_, res) => {
-  res.json({
-    access_token,
-  })
+app.get('/api/devices', (req, res) => {
+  request.get(
+    `${spotifyApiUri}/me/player/devices`,
+    {
+      method: 'GET',
+      headers: {
+        authorization: req.headers.authorization,
+      },
+    },
+    function (_error, _response, body) {
+      res.json(JSON.parse(body))
+    },
+  )
 })
 
 app.listen(port, () => {

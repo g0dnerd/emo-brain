@@ -2,49 +2,52 @@
 const { token } = defineProps(['token'])
 
 import { ref, watchEffect } from 'vue'
-import { type Track } from '@/types'
+import { type WebPlaybackTrack, type WebPlaybackState } from '@/types'
 
 const loading = ref(false)
 
-const player = ref()
+const webPlayer = ref()
 const isPaused = ref(false)
 const isActive = ref(false)
-const currentTrack = ref<Track>()
+const currentTrack = ref<WebPlaybackTrack>()
+const deviceId = ref<string>()
 
 watchEffect(async () => {
   loading.value = true
   try {
+    // Load the Spotify web playback SDK script and embed it
     const script = document.createElement('script')
     script.src = 'https://sdk.scdn.co/spotify-player.js'
     script.async = true
-
     document.body.appendChild(script)
 
+    // Use the Spotify SDK to create a hook into the playback API
     // @ts-ignore
     window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log('SDK ready')
-
       // @ts-ignore
-      const p = new window.Spotify.Player({
+      const player = new window.Spotify.Player({
         name: 'Elele',
-        // @ts-ignore
-        getOAuthToken: (cb) => {
-          cb(token)
+        getOAuthToken: (callback: any) => {
+          callback(token)
         },
         volume: 0.5,
       })
 
-      player.value = p
+      webPlayer.value = player
 
-      p.addListener('ready', (device_id: string) => {
+      // TODO: Is there anything the client needs to do here?
+      player.addListener('ready', (device_id: string) => {
+        deviceId.value = device_id
         console.log('Ready with device ID', device_id)
       })
 
-      p.addListener('not_ready', (device_id: string) => {
+      // TODO: Is there anything the client needs to do here?
+      player.addListener('not_ready', (device_id: string) => {
+        deviceId.value = undefined
         console.log('Device ID has gone offline:', device_id)
       })
 
-      p.addListener('player_state_changed', (state: any) => {
+      player.addListener('player_state_changed', (state: WebPlaybackState) => {
         if (!state) {
           return
         }
@@ -52,14 +55,13 @@ watchEffect(async () => {
         currentTrack.value = state.track_window.current_track
         isPaused.value = state.paused
 
-        // @ts-ignore
-        p.getCurrentState().then((state: any) => {
+        player.getCurrentState().then((state: WebPlaybackState) => {
           !state ? (isActive.value = false) : (isActive.value = true)
         })
       })
 
       // @ts-ignore
-      p.connect()
+      player.connect()
     }
   } catch (error) {
     console.error(error)
@@ -69,15 +71,15 @@ watchEffect(async () => {
 })
 
 function previousTrack() {
-  player.value.previousTrack()
+  webPlayer.value.previousTrack()
 }
 
 function togglePlay() {
-  player.value.togglePlay()
+  webPlayer.value.togglePlay()
 }
 
 function nextTrack() {
-  player.value.nextTrack()
+  webPlayer.value.nextTrack()
 }
 </script>
 

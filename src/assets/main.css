@@ -22,6 +22,6 @@ a,
   }
 
   #app {
-    display: grid;
+    width: 100%;
   }
 }

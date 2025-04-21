@@ -1,5 +1,6 @@
-import Player from '@/components/Player.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+
+import Player from '@/components/Player.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
