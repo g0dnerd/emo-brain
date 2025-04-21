@@ -1,16 +1,13 @@
 import express from 'express'
-import dotenv from 'dotenv'
 import cors from 'cors'
 import request from 'request'
 
 const port = 5000
 
-dotenv.config()
-
 global.access_token = ''
 
-var spotify_client_id = process.env.SPOTIFY_CLIENT_ID
-var spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET
+var spotify_client_id = '5c7dfb57f6f14c89b6028d78d721eeb5'
+var spotify_client_secret = '97f5b635e14d4f098659c1729bd05382'
 var redirect_uri = 'http://127.0.0.1:5000/auth/callback'
 
 var app = express()
